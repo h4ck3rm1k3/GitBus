@@ -1,0 +1,2 @@
+the idea of a gitbus is to create tiny request response packages that are sent via git.
+it should be able to be used for distributed worldwide interprocess communication for work intensive processes, such as rendering of pages, maps, compiling and processing of data.
