@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rdf:RDF [
-  <!ENTITY gitbus "http://github.com/h4ck3rm1k3/GitBus/blob/master/gitbus.owl">
+  <!ENTITY gitnet "http://github.com/h4ck3rm1k3/GitBus/blob/master/gitnet.owl">
   <!ENTITY owl "http://www.w3.org/2002/07/owl#">
   <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
   <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
 ]>
-<rdf:RDF xml:base="&gitbus;"
+<rdf:RDF xml:base="&gitnet;"
+         xmlns:a=""
          xmlns:owl="&owl;"
          xmlns:rdf="&rdf;"
          xmlns:rdfs="&rdfs;">
@@ -16,7 +17,204 @@
                 rdfs:label="the gitnet ontology"
                 owl:versionInfo="0.1"/>
 
+<!-- Classes -->
+  <owl:Class rdf:about="#blob"
+             rdfs:label="struct blob">
+    <rdfs:comment xml:lang="en">this is the struct blob, we define everything in its contents.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <owl:disjointWith rdf:resource="blob.buffer"/>
+    <owl:disjointWith rdf:resource="blob.buffer.size"/>
+    <owl:disjointWith rdf:resource="blob_type"/>
+    <owl:disjointWith rdf:resource="sha1"/>
+    <owl:unionOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="object"/>
+    </owl:unionOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#object_array">
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#object_list">
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <rdfs:subClassOf rdf:resource="linked_list"/>
+    <owl:disjointWith rdf:resource="object_refs"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="blob.buffer">
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <owl:disjointWith rdf:resource="#blob"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="blob.buffer.size">
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <owl:disjointWith rdf:resource="#blob"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="blob_type">
+    <rdfs:comment xml:lang="en">extern const char *blob_type</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <owl:disjointWith rdf:resource="#blob"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="git.object.type.bits">
+    <rdfs:comment xml:lang="en">3 bits.</rdfs:comment>
+    <owl:equivalentClass rdf:resource="int"/>
+    <owl:equivalentClass rdf:resource="unsigned"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="git.objects.code">
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <rdfs:subClassOf rdf:resource="git.objects.object"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="git.objects.object">
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <rdfs:subClassOf rdf:resource="git.objects.object"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="hash_table"/>
+  <owl:Class rdf:about="int"/>
+  <owl:Class rdf:about="linked_list"/>
+  <owl:Class rdf:about="object">
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <owl:oneOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#object_list.item"/>
+    </owl:oneOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="object.type.name.str"/>
+  <owl:Class rdf:about="object_array_entry"/>
+  <owl:Class rdf:about="object_list.item">
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="object_refs">
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <rdfs:subClassOf rdf:resource="hash_table"/>
+    <owl:disjointWith rdf:resource="#object_list"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="sha1">
+    <rdfs:comment xml:lang="en">const unsigned char *</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="git.objects.code"/>
+    <owl:disjointWith rdf:resource="#blob"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="unsigned"/>
+
+<!-- Datatypes -->
+  <rdfs:Datatype rdf:about="&xsd;unsignedInt"/>
+
 <!-- Annotation Properties -->
+  <owl:AnnotationProperty rdf:about="&rdfs;comment"/>
   <owl:AnnotationProperty rdf:about="&rdfs;label"/>
   <owl:AnnotationProperty rdf:about="&owl;versionInfo"/>
+
+<!-- Datatype Properties -->
+  <owl:DatatypeProperty rdf:about="#count">
+    <rdfs:domain rdf:resource="hash_table"/>
+    <rdfs:domain rdf:resource="object_refs"/>
+    <rdfs:range rdf:resource="&xsd;unsignedInt"/>
+    <rdfs:subPropertyOf rdf:resource="#hash_table_count"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#hash_table_count"/>
+  <owl:DatatypeProperty rdf:about="#mode">
+    <rdfs:domain rdf:resource="object_array_entry"/>
+    <rdfs:range rdf:resource="&xsd;unsignedInt"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#name">
+    <rdfs:domain rdf:resource="object_array_entry"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#object.flags.flag.bits">
+    <rdfs:comment xml:lang="en">#define FLAG_BITS  27
+unsigned flags : FLAG_BITS;</rdfs:comment>
+    <rdfs:domain rdf:resource="object"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#object.flags.parsed.bit">
+    <rdfs:domain rdf:resource="object"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#object.flags.used.bit">
+    <rdfs:domain rdf:resource="object"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#object_array.alloc">
+    <rdfs:domain rdf:resource="#object_array"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#object_array.nr">
+    <rdfs:domain rdf:resource="#object_array"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#typename">
+    <rdfs:domain rdf:resource="git.object.type.bits"/>
+  </owl:DatatypeProperty>
+
+<!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="#declared_in_blob.h"/>
+  <owl:ObjectProperty rdf:about="#item">
+    <rdfs:domain rdf:resource="linked_list"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#lookup_blob">
+    <rdfs:comment xml:lang="en">struct blob *lookup_blob(const unsigned char *sha1);</rdfs:comment>
+    <rdfs:domain rdf:resource="sha1"/>
+    <rdfs:range rdf:resource="#blob"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#next">
+    <rdfs:domain rdf:resource="linked_list"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#object.item">
+    <rdfs:domain rdf:resource="#object_list"/>
+    <rdfs:domain rdf:resource="object_array_entry"/>
+    <rdfs:range rdf:resource="object"/>
+    <rdfs:subPropertyOf rdf:resource="#item"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#object.sha1">
+    <rdfs:domain rdf:resource="object"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#object.type.bits">
+    <rdfs:comment xml:lang="en">The object type is stored in 3 bits.</rdfs:comment>
+    <rdfs:domain rdf:resource="object"/>
+    <rdfs:range rdf:resource="git.object.type.bits"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#object_array.objects">
+    <rdfs:domain rdf:resource="#object_array"/>
+    <rdfs:range rdf:resource="object_array_entry"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#parse_blob">
+    <rdfs:domain rdf:resource="#blob"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#parse_blob_buffer">
+    <rdfs:domain rdf:resource="#blob"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#ref">
+    <rdfs:domain rdf:resource="hash_table"/>
+    <rdfs:domain rdf:resource="object_refs"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#referenced_in_blob.h">
+    <rdfs:range rdf:resource="sha1"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#type_from_string">
+    <rdfs:domain rdf:resource="object.type.name.str"/>
+    <rdfs:range rdf:resource="git.object.type.bits"/>
+  </owl:ObjectProperty>
+
+<!-- Instances -->
+  <a:object_list.item rdf:about="#object_list.item"/>
 </rdf:RDF>
