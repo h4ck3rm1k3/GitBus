@@ -18,6 +18,42 @@
                 owl:versionInfo="0.1"/>
 
 <!-- Classes -->
+  <owl:Class rdf:about="#OBJ_ANY">
+    <rdfs:subClassOf rdf:resource="git.object.type.bits"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#OBJ_BAD">
+    <rdfs:subClassOf rdf:resource="git.object.type.bits"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#OBJ_BLOB">
+    <rdfs:subClassOf rdf:resource="git.object.type.bits"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#OBJ_COMMIT">
+    <rdfs:subClassOf rdf:resource="git.object.type.bits"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#OBJ_NONE">
+    <rdfs:subClassOf rdf:resource="git.object.type.bits"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#OBJ_OFS_DELTA">
+    <rdfs:subClassOf rdf:resource="git.object.type.bits"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#OBJ_REF_DELTA">
+    <rdfs:subClassOf rdf:resource="git.object.type.bits"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#OBJ_TAG">
+    <rdfs:subClassOf rdf:resource="git.object.type.bits"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#OBJ_TREE">
+    <rdfs:subClassOf rdf:resource="git.object.type.bits"/>
+  </owl:Class>
+
   <owl:Class rdf:about="#blob"
              rdfs:label="struct blob">
     <rdfs:comment xml:lang="en">this is the struct blob, we define everything in its contents.</rdfs:comment>
@@ -59,6 +95,26 @@
 
   <owl:Class rdf:about="git.object.type.bits">
     <rdfs:comment xml:lang="en">3 bits.</rdfs:comment>
+    <rdfs:comment xml:lang="en">This is the git object type. each object contains basic information
+
+The per-object header is a pretty dense thing, which is
+ - first byte: low four bits are "size", then three bits of "type",  and the high bit is "size continues".
+ - each byte afterwards: low seven bits are size continuation,  with the high bit being "size continues"
+see the function encode_header
+see the enum object_type type</rdfs:comment>
+    <rdfs:comment xml:lang="en">from the file :
+cache.h
+OBJ_BAD = -1,
+	OBJ_NONE = 0,
+	OBJ_COMMIT = 1,
+	OBJ_TREE = 2,
+	OBJ_BLOB = 3,
+	OBJ_TAG = 4,
+	/* 5 for future expansion */
+	OBJ_OFS_DELTA = 6,
+	OBJ_REF_DELTA = 7,
+	OBJ_ANY,
+	OBJ_MAX,</rdfs:comment>
     <owl:equivalentClass rdf:resource="int"/>
     <owl:equivalentClass rdf:resource="unsigned"/>
   </owl:Class>
