@@ -67,6 +67,11 @@
     </owl:unionOf>
   </owl:Class>
 
+  <owl:Class rdf:about="#git-program"/>
+  <owl:Class rdf:about="#git-tag">
+    <rdfs:subClassOf rdf:resource="#git-program"/>
+  </owl:Class>
+
   <owl:Class rdf:about="#object_array">
     <rdfs:subClassOf rdf:resource="git.objects.code"/>
   </owl:Class>
@@ -151,15 +156,44 @@ OBJ_BAD = -1,
     <owl:disjointWith rdf:resource="#object_list"/>
   </owl:Class>
 
+  <owl:Class rdf:about="pgp.signature"/>
   <owl:Class rdf:about="sha1">
     <rdfs:comment xml:lang="en">const unsigned char *</rdfs:comment>
     <rdfs:subClassOf rdf:resource="git.objects.code"/>
     <owl:disjointWith rdf:resource="#blob"/>
   </owl:Class>
 
+  <owl:Class rdf:about="tag">
+    <rdfs:comment xml:lang="en">&lt;html>
+  &lt;head>
+    
+  &lt;/head>
+  &lt;body>
+    &lt;p style="margin-top: 0">
+      &lt;a href="http://book.git-scm.com/3_git_tag.html">http://book.git-scm.com/3_git_tag.html&lt;/a>
+    &lt;/p>
+  &lt;/body>
+&lt;/html>
+</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="object"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="tag-lightweight">
+    <rdfs:subClassOf rdf:resource="tag"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="tag-object">
+    <rdfs:subClassOf rdf:resource="tag"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="tag-object-signed">
+    <rdfs:subClassOf rdf:resource="tag-object"/>
+  </owl:Class>
+
   <owl:Class rdf:about="unsigned"/>
 
 <!-- Datatypes -->
+  <rdfs:Datatype rdf:about="&xsd;Name"/>
   <rdfs:Datatype rdf:about="&xsd;unsignedInt"/>
 
 <!-- Annotation Properties -->
@@ -185,6 +219,10 @@ OBJ_BAD = -1,
     <rdfs:domain rdf:resource="object_array_entry"/>
   </owl:DatatypeProperty>
 
+  <owl:DatatypeProperty rdf:about="#object.allocator">
+    <rdfs:domain rdf:resource="object"/>
+  </owl:DatatypeProperty>
+
   <owl:DatatypeProperty rdf:about="#object.flags.flag.bits">
     <rdfs:comment xml:lang="en">#define FLAG_BITS  27
 unsigned flags : FLAG_BITS;</rdfs:comment>
@@ -207,12 +245,38 @@ unsigned flags : FLAG_BITS;</rdfs:comment>
     <rdfs:domain rdf:resource="#object_array"/>
   </owl:DatatypeProperty>
 
+  <owl:DatatypeProperty rdf:about="#tag.name">
+    <rdfs:domain rdf:resource="tag"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#tag.tag">
+    <rdfs:domain rdf:resource="tag"/>
+  </owl:DatatypeProperty>
+
   <owl:DatatypeProperty rdf:about="#typename">
     <rdfs:domain rdf:resource="git.object.type.bits"/>
+    <rdfs:range rdf:resource="&xsd;Name"/>
   </owl:DatatypeProperty>
 
 <!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="#Object_is_of_type_tag">
+    <rdfs:domain rdf:resource="tag"/>
+    <rdfs:range rdf:resource="#OBJ_TAG"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#create_object">
+    <rdfs:range rdf:resource="object"/>
+  </owl:ObjectProperty>
+
   <owl:ObjectProperty rdf:about="#declared_in_blob.h"/>
+  <owl:ObjectProperty rdf:about="#get_object_mark">
+    <rdfs:domain rdf:resource="object"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#handle_tag">
+    <rdfs:domain rdf:resource="tag"/>
+  </owl:ObjectProperty>
+
   <owl:ObjectProperty rdf:about="#item">
     <rdfs:domain rdf:resource="linked_list"/>
   </owl:ObjectProperty>
@@ -221,6 +285,14 @@ unsigned flags : FLAG_BITS;</rdfs:comment>
     <rdfs:comment xml:lang="en">struct blob *lookup_blob(const unsigned char *sha1);</rdfs:comment>
     <rdfs:domain rdf:resource="sha1"/>
     <rdfs:range rdf:resource="#blob"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#lookup_object">
+    <rdfs:range rdf:resource="object"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#lookup_tag">
+    <rdfs:range rdf:resource="tag"/>
   </owl:ObjectProperty>
 
   <owl:ObjectProperty rdf:about="#next">
@@ -236,6 +308,7 @@ unsigned flags : FLAG_BITS;</rdfs:comment>
 
   <owl:ObjectProperty rdf:about="#object.sha1">
     <rdfs:domain rdf:resource="object"/>
+    <rdfs:domain rdf:resource="tag"/>
   </owl:ObjectProperty>
 
   <owl:ObjectProperty rdf:about="#object.type.bits">
@@ -257,6 +330,10 @@ unsigned flags : FLAG_BITS;</rdfs:comment>
     <rdfs:domain rdf:resource="#blob"/>
   </owl:ObjectProperty>
 
+  <owl:ObjectProperty rdf:about="#parse_tag_buffer">
+    <rdfs:domain rdf:resource="tag"/>
+  </owl:ObjectProperty>
+
   <owl:ObjectProperty rdf:about="#ref">
     <rdfs:domain rdf:resource="hash_table"/>
     <rdfs:domain rdf:resource="object_refs"/>
@@ -264,6 +341,20 @@ unsigned flags : FLAG_BITS;</rdfs:comment>
 
   <owl:ObjectProperty rdf:about="#referenced_in_blob.h">
     <rdfs:range rdf:resource="sha1"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#tag.next">
+    <rdfs:domain rdf:resource="tag"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#tag.pack_id">
+    <rdfs:domain rdf:resource="tag"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#tag.signature">
+    <rdfs:comment xml:lang="en">handle signed tags,</rdfs:comment>
+    <rdfs:domain rdf:resource="tag"/>
+    <rdfs:range rdf:resource="pgp.signature"/>
   </owl:ObjectProperty>
 
   <owl:ObjectProperty rdf:about="#type_from_string">
